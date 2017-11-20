@@ -74,22 +74,27 @@ const radiusFromSide = (side) => (side / 4) * (Math.sqrt(15) + Math.sqrt(3));
 
 const range = n => Array(n).join().split(',').map((n, i) => i);
 
+const magnitude = vec => Math.sqrt(vec.map(n => n * n)
+  .reduce((a,v) => a + v));
+
+const normalize = vec => vec.map(n => n / magnitude(vec));
+
 const main = () => {
 	const r = radiusFromSide(120);
 	const d = 3;
 	const gap = 2;
+  const rCorner = r/15;
 
   	const verts = getVertices(r);
  	
- 	const pentagonPane = (index) => {
+ 	const pentagonPane = (index, d) => {
  		const pentVerts = pentagons[index].map(vertIndex => verts[vertIndex]);
 		const face1Center = averageVerts(pentVerts);
 
 		const face1Verts = pentVerts.concat([face1Center]);
 		const face1Tris = range(5).map(i => [i, (i + 1) % 5, 5].reverse());
 
-		const distanceToFace1Center = Math.sqrt(face1Center.map(n => n * n).reduce((a,v) => a + v));
-		const face1CenterNormalized = face1Center.map(n => n / distanceToFace1Center);
+		const face1CenterNormalized = normalize(face1Center);
 
 		const face2Verts = face1Verts.map(v => v.map((n, i) => n + face1CenterNormalized[i] * d));
 		const face2Tris = range(5).map(i => [i, (i + 1) % 5, 5]).map(v => v.map(i => i + 6));
@@ -103,9 +108,113 @@ const main = () => {
 		}).translate(face1CenterNormalized.map(n => n * gap));
  	}
 
+  const gapPanes = (d) => {
+    const pentVerts = i => pentagons[i].map(vertIndex => verts[vertIndex]);
+
+    const s1Verts = range(3)
+      .map(iP => {
+        const verts = pentVerts(iP);
+        const normalizedCenter = normalize(averageVerts(verts));
+        return verts.map((v, i) => v.map((n, i) => n + normalizedCenter[i] * gap));
+      })
+      .map(v => [v[0], v[1], v[4]]);
+    const side1Points = s1Verts[0].concat(s1Verts[1]).concat(s1Verts[2]);
+
+    const side1Tris = range(3) // top faces
+        .map(n => n * 3)
+        .reduce((a, i) => a.concat([
+          [i, (i + 3) % 9, (i + 2) % 9], 
+          [(i + 3) % 9, (i + 4) % 9, (i + 2) % 9]]), []);
+
+    const s2Verts = range(3)
+      .map(iP => {
+        const verts = pentVerts(iP);
+        const normalizedCenter = normalize(averageVerts(verts));
+        return verts.map((v, i) => v.map((n, i) => n + normalizedCenter[i] * (gap + d)));
+      })
+      .map(v => [v[0], v[1], v[4]]);
+
+    const side2Points = s2Verts[0].concat(s2Verts[1]).concat(s2Verts[2]);
+    const side2Tris = side1Tris.map(v => v.map(n => n + 9).reverse()); // bottom faces
+
+    const tris = [
+        // [0, 9, 3], [3, 9, 12], // inner face
+        [0, 2, 9], [2, 11, 9], // side face
+        [3, 12, 4], [4, 12, 13], // side face
+        [13, 2, 4], [2, 13, 11], // outer face
+
+        // [3, 12, 6], [6, 12, 15], // inner face
+        [3, 5, 12], [5, 14, 12], // side face
+        [6, 15, 7], [7, 15, 16], // side face
+        [16, 5, 7], [5, 16, 14], // outer face
+
+        // [6, 15, 9], [9, 0, 6], // inner face
+        [6, 8, 15], [8, 17, 15], // side face
+        [9, 10, 0], [10, 1, 0], // side face
+        [1, 10, 8], [8, 10, 17], // outer face
+
+        [0, 6, 3], [9, 12, 15] // top/bottom inner triangle
+        ];
+
+    return polyhedron({
+      points: side1Points.concat(side2Points),
+      triangles: side1Tris // top faces
+        .concat(side2Tris) // bottom faces
+        .concat(tris) // side faces
+      });
+
+    // const colors = ['red', 'orange', 'yellow', 'green', 'blue'];
+    // return pentVerts(0).map((v, i) => 
+    //     color(colors[i], sphere())
+    //     .translate(v)
+    //     );
+  }
+
+  const cornerBall = () => 
+    sphere({ r: rCorner })
+      .rotateX(55) 
+      .rotateZ(135)
+      .translate(verts[0]); 
+
+  const screwHole = () =>
+    cylinder({ 
+      h: 4 * rCorner, 
+      r: gap * 0.5,
+      center: true,
+    })
+      .rotateX(55) // I don't understand why this is not 45
+      .rotateZ(135)
+      .translate(verts[0]);
+
+  const topPiece = () => difference(
+    // verts.map(v => sphere().translate(v)),
+    cornerBall().subtract(screwHole()),
+    gapPanes(d * 10),
+    union(range(3).map(i => pentagonPane(i, d * 10)))
+    // screwHole()
+    );
+
 	return difference(
 		// verts.map(v => sphere().translate(v)),
-		sphere({ r: r/20 }).translate(verts[0]),
-		union(range(12).map(pentagonPane))
-		);
+		cornerBall().subtract(screwHole()),
+    // gapPanes(d),
+		union(range(3).map(i => pentagonPane(i, d))),
+    topPiece()
+    // screwHole()
+		)
+  .translate(verts[0].map(n => -n))
+  .rotateZ(-135)
+  .rotateX(-55)
+  .rotateX(180);
+
+  // return union(
+  //   // verts.map(v => sphere().translate(v)),
+  //   cornerBall(),
+  //   union(range(3).map(i => pentagonPane(i, gap))),
+  //   screwHole()
+  //   )
+  // .translate(verts[0].map(n => -n))
+  // .rotateZ(-135)
+  // .rotateX(-55)
+  // .rotateX(180);
 }
