@@ -179,33 +179,63 @@ const main = () => {
   const screwHole = () =>
     cylinder({ 
       h: 4 * rCorner, 
-      r: gap * 0.5,
+      r: 2,
       center: true,
     })
       .rotateX(55) // I don't understand why this is not 45
       .rotateZ(135)
       .translate(verts[0]);
 
+  const nutHole = () =>
+    linear_extrude({
+        height: 4
+      },
+      circle({
+        r: 4.75,
+        fn: 6,
+        center: true
+      })
+    )
+    .translate([0, 0, rCorner - 4]);
+
+  const counterSink = () => 
+    cylinder({
+      r1: 3.5,
+      r2: 1.5,
+      h: 3
+    })
+    .translate([0, 0, -rCorner])
+
+
   const topPiece = () => difference(
-    // verts.map(v => sphere().translate(v)),
     cornerBall().subtract(screwHole()),
     gapPanes(d * 10),
     union(range(3).map(i => pentagonPane(i, d * 10)))
-    // screwHole()
     );
 
-	return difference(
+  return difference( // inner
+    topPiece()
+      .translate(verts[0].map(n => -n))
+      .rotateZ(-135)
+      .rotateX(-55)
+      .rotateX(180),
+    nutHole()
+    );
+
+	return difference( // outer
 		// verts.map(v => sphere().translate(v)),
 		cornerBall().subtract(screwHole()),
     // gapPanes(d),
 		union(range(3).map(i => pentagonPane(i, d))),
-    topPiece()
+    topPiece(),
+    nutHole()
     // screwHole()
 		)
   .translate(verts[0].map(n => -n))
   .rotateZ(-135)
   .rotateX(-55)
-  .rotateX(180);
+  .rotateX(180)
+  .subtract(counterSink());
 
   // return union(
   //   // verts.map(v => sphere().translate(v)),
