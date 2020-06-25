@@ -183,12 +183,12 @@ const main = () => {
 
   return [0, 4, 7].map((i, idx) => hulusiDrone({
     boreLength: 100 * (1 / intervals[i]),
-    reedBaseWidth: 3.6,
+    reedBaseWidth: 2.8,
     reedLength: 8,
     reedOffset: 2,
-    reedPointWidth: 0.6,
+    reedPointWidth: 1,
     reedThickness: 0.2,
-    reedTongueGap: 0.1,
+    reedTongueGap: 0.2,
     tubeDiameter: 8,
     tubeSideCount: 3,
     wallThickness: 0.6,

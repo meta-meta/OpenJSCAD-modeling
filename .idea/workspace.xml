@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="334e855a-385d-4e42-9e73-6dd0cdf46921" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+    <list default="true" id="334e855a-385d-4e42-9e73-6dd0cdf46921" name="Default" comment="consistent walls; even multiples of 0.2mm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hulusi-tube.js" beforeDir="false" afterPath="$PROJECT_DIR$/hulusi-drone.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hulusi-drone.js" beforeDir="false" afterPath="$PROJECT_DIR$/hulusi-drone.js" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +19,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="JsFlowSettings">
     <service-enabled>true</service-enabled>
@@ -49,6 +48,13 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
@@ -62,18 +68,6 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Projects\OpenJSCAD-modeling" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -94,25 +88,43 @@
     <option name="totallyTimeSpent" value="20006000" />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="stable drone" />
     <MESSAGE value="some organization; thicker tongue gap" />
     <MESSAGE value="finding the smallest stable tube/reed. In what ways and how much does reed placement matter?" />
-    <option name="LAST_COMMIT_MESSAGE" value="finding the smallest stable tube/reed. In what ways and how much does reed placement matter?" />
+    <MESSAGE value="consistent walls; even multiples of 0.2mm" />
+    <option name="LAST_COMMIT_MESSAGE" value="consistent walls; even multiples of 0.2mm" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="295" y="48" key="CommitChangelistDialog2" timestamp="1593052505054">
+      <screen x="0" y="0" width="1707" height="929" />
+    </state>
+    <state x="295" y="48" key="CommitChangelistDialog2/0.0.1707.929@0.0.1707.929" timestamp="1593052505054" />
+    <state x="163" y="90" key="MergeDialog" timestamp="1593052408640">
+      <screen x="0" y="0" width="1707" height="929" />
+    </state>
+    <state x="163" y="90" key="MergeDialog/0.0.1707.929@0.0.1707.929" timestamp="1593052408640" />
+    <state x="445" y="212" key="Vcs.Push.Dialog.v2" timestamp="1593052508014">
+      <screen x="0" y="0" width="1707" height="929" />
+    </state>
+    <state x="445" y="212" key="Vcs.Push.Dialog.v2/0.0.1707.929@0.0.1707.929" timestamp="1593052508014" />
+    <state x="662" y="393" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593052357631">
+      <screen x="0" y="0" width="1707" height="929" />
+    </state>
+    <state x="662" y="393" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1707.929@0.0.1707.929" timestamp="1593052357631" />
   </component>
 </project>
