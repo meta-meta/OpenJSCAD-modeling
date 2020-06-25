@@ -25,12 +25,12 @@ const intervals = {
  * @returns {*}
  */
 const tongueGap = ({
-  gapW,
-  tongueBaseW,
-  tonguePointW,
-  tongueShaftL,
-  tongueTipL,
-} = {}) => rectangular_extrude([ // extrude a path following these vertices
+                     gapW,
+                     tongueBaseW,
+                     tonguePointW,
+                     tongueShaftL,
+                     tongueTipL,
+                   } = {}) => rectangular_extrude([ // extrude a path following these vertices
   [tongueBaseW / -2, 0],
   [tonguePointW / -2, tongueShaftL],
   [0, tongueShaftL + tongueTipL],
@@ -52,12 +52,12 @@ const tongueGap = ({
  * @returns {*}
  */
 const reedAssembly = ({
-  length,
-  thickness,
-  tongueGapProps,
-  width,
-  yOffset,
-} = {}) =>
+                        length,
+                        thickness,
+                        tongueGapProps,
+                        width,
+                        yOffset,
+                      } = {}) =>
   cube({
     center: [true, false, false],
     size: [width, length, thickness],
@@ -68,17 +68,17 @@ const reedAssembly = ({
     );
 
 const hulusiDrone = ({
-  boreLength,
-  reedLength,
-  reedOffset,
-  reedPointWidth,
-  reedThickness,
-  reedBaseWidth,
-  reedTongueGap,
-  tubeDiameter,
-  tubeSideCount,
-  wallThickness,
-}) => {
+                       boreLength,
+                       reedLength,
+                       reedOffset,
+                       reedPointWidth,
+                       reedThickness,
+                       reedBaseWidth,
+                       reedTongueGap,
+                       tubeDiameter,
+                       tubeSideCount,
+                       wallThickness,
+                     }) => {
   const r = tubeDiameter / 2;
   const rot = 360 / (tubeSideCount * 4); // FIXME: this only works for tubeSideCount=3
   const heightAdjust = r * 0.5; // FIXME: this only works for tubeSideCount=3
@@ -91,30 +91,31 @@ const hulusiDrone = ({
     .rotateX(90)
     .rotateY(rot));
 
+  const wallThicknessAdj = wallThickness * 2; // fudge for cylinder
+
   const bore = cylinder({
     fn: tubeSideCount,
     h: boreLength,
-    r: r - wallThickness,
+    r: r - wallThicknessAdj,
   })
     .rotateX(90)
-    .rotateY(rot)
-    .translate([0, wallThickness, 0]);
+    .rotateY(rot);
 
-  const reedAssyLength = reedLength + reedOffset + reedTongueGap;
-  const reedAssyWidth = reedBaseWidth + (2 * reedTongueGap);
+  const reedAssyLength = reedLength + reedOffset + (2 * reedTongueGap);
+  const reedAssyWidth = reedBaseWidth + (4 * reedTongueGap);
 
   return union([
     tube
       .subtract(bore)
       .translate([
         0,
-        boreLength - wallThickness,
+        boreLength,
         heightAdjust, // raise tube so bottom face is at z=0
       ])
       .subtract( // cutout for reedAssembly
         cube({
           center: [true, false, true], // don't center y so the edge is at y=0
-          size: [reedAssyWidth, reedAssyLength, wallThickness],
+          size: [reedAssyWidth, reedAssyLength, wallThicknessAdj],
         })
       ),
 
@@ -151,13 +152,13 @@ const main = () => {
   *  */
 
   //freereed-0-4-7--100
- /* return [0, 4, 7].map((i, idx) => hulusiTube({
-    reedPointWidth: 2,//0.25 * i,
-    reedOffset: 2,
-    reedBaseWidth: 6,
-    boreLength: 100 * (1 / intervals[i]),
-  }).translate([10 * idx, 0, 0]));
-*/
+  /* return [0, 4, 7].map((i, idx) => hulusiTube({
+     reedPointWidth: 2,//0.25 * i,
+     reedOffset: 2,
+     reedBaseWidth: 6,
+     boreLength: 100 * (1 / intervals[i]),
+   }).translate([10 * idx, 0, 0]));
+ */
   //freereed-0-4-7--100-thin-strip-reed
   /*return [0, 4, 7].map((i, idx) => hulusiTube({
     reedPointWidth: 2,//0.25 * i,
@@ -182,15 +183,15 @@ const main = () => {
 
   return [0, 4, 7].map((i, idx) => hulusiDrone({
     boreLength: 100 * (1 / intervals[i]),
-    reedBaseWidth: 4,
+    reedBaseWidth: 3.6,
     reedLength: 8,
     reedOffset: 2,
-    reedPointWidth: 0.5,
-    reedThickness: 0.25,
-    reedTongueGap: 0.4,
+    reedPointWidth: 0.6,
+    reedThickness: 0.2,
+    reedTongueGap: 0.1,
     tubeDiameter: 8,
     tubeSideCount: 3,
-    wallThickness: 1,
+    wallThickness: 0.6,
   }).translate([10 * idx, 0, 0]));
 
 // TODO: is there a way to generate filename here?
