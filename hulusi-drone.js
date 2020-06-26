@@ -1,16 +1,16 @@
 const intervals = {
   0: 1,
-  1: 16/15,
-  2: 9/8,
-  3: 6/5,
-  4: 5/4,
-  5: 4/3,
-  6: 45/32,
-  7: 3/2,
-  8: 8/5,
-  9: 5/3,
-  10: 16/9,
-  11: 15/8,
+  1: 16 / 15,
+  2: 9 / 8,
+  3: 6 / 5,
+  4: 5 / 4,
+  5: 4 / 3,
+  6: 45 / 32,
+  7: 3 / 2,
+  8: 8 / 5,
+  9: 5 / 3,
+  10: 16 / 9,
+  11: 15 / 8,
   12: 2,
 };
 
@@ -25,12 +25,12 @@ const intervals = {
  * @returns {*}
  */
 const tongueGap = ({
-                     gapW,
-                     tongueBaseW,
-                     tonguePointW,
-                     tongueShaftL,
-                     tongueTipL,
-                   } = {}) => rectangular_extrude([ // extrude a path following these vertices
+  gapW,
+  tongueBaseW,
+  tonguePointW,
+  tongueShaftL,
+  tongueTipL,
+} = {}) => rectangular_extrude([ // extrude a path following these vertices
   [tongueBaseW / -2, 0],
   [tonguePointW / -2, tongueShaftL],
   [0, tongueShaftL + tongueTipL],
@@ -52,12 +52,12 @@ const tongueGap = ({
  * @returns {*}
  */
 const reedAssembly = ({
-                        length,
-                        thickness,
-                        tongueGapProps,
-                        width,
-                        yOffset,
-                      } = {}) =>
+  length,
+  thickness,
+  tongueGapProps,
+  width,
+  yOffset,
+} = {}) =>
   cube({
     center: [true, false, false],
     size: [width, length, thickness],
@@ -68,22 +68,23 @@ const reedAssembly = ({
     );
 
 const hulusiDrone = ({
-                       boreLength,
-                       reedLength,
-                       reedOffset,
-                       reedPointWidth,
-                       reedThickness,
-                       reedBaseWidth,
-                       reedTongueGap,
-                       tubeDiameter,
-                       tubeSideCount,
-                       wallThickness,
-                     }) => {
+  _isCalibration,
+  boreLength,
+  reedLength,
+  reedOffset,
+  reedPointWidth,
+  reedThickness,
+  reedBaseWidth,
+  reedTongueGap,
+  tubeDiameter,
+  tubeSideCount,
+  wallThickness,
+}) => {
   const r = tubeDiameter / 2;
   const rot = 360 / (tubeSideCount * 4); // FIXME: this only works for tubeSideCount=3
   const heightAdjust = r * 0.5; // FIXME: this only works for tubeSideCount=3
 
-  const tube = color([0, 1, 1],  cylinder({
+  const tube = color([0, 1, 1], cylinder({
     fn: tubeSideCount,
     h: boreLength + wallThickness,
     r,
@@ -105,19 +106,21 @@ const hulusiDrone = ({
   const reedAssyWidth = reedBaseWidth + (4 * reedTongueGap);
 
   return union([
-    tube
-      .subtract(bore)
-      .translate([
-        0,
-        boreLength,
-        heightAdjust, // raise tube so bottom face is at z=0
-      ])
-      .subtract( // cutout for reedAssembly
-        cube({
-          center: [true, false, true], // don't center y so the edge is at y=0
-          size: [reedAssyWidth, reedAssyLength, wallThicknessAdj],
-        })
-      ),
+    ..._isCalibration ? [] : [
+      tube
+        .subtract(bore)
+        .translate([
+          0,
+          boreLength,
+          heightAdjust, // raise tube so bottom face is at z=0
+        ])
+        .subtract( // cutout for reedAssembly
+          cube({
+            center: [true, false, true], // don't center y so the edge is at y=0
+            size: [reedAssyWidth, reedAssyLength, wallThicknessAdj],
+          })
+        )
+    ],
 
     reedAssembly({
       length: reedAssyLength,
@@ -181,8 +184,9 @@ const main = () => {
     wallThickness: 1,
   });*/
 
-  return [0, 4, 7].map((i, idx) => hulusiDrone({
-    boreLength: 100 * (1 / intervals[i]),
+  return [0, 5, 9, 12].map((i, idx) => hulusiDrone({
+    _isCalibration: true,
+    boreLength: 200 * (1 / intervals[i]), // fixme: seems like clarinet f=3:1 at 1/2 length
     reedBaseWidth: 2.8,
     reedLength: 8,
     reedOffset: 2,
@@ -194,6 +198,15 @@ const main = () => {
     wallThickness: 0.6,
   }).translate([10 * idx, 0, 0]));
 
+  /*
+  * 100mm - 1243hz
+  * 80mm - 1397hz  ~ 9/8
+  * 66.6mm - 1570hz  ~ 5/4
+  * */
+
+
 // TODO: is there a way to generate filename here?
+
+// TODO print housing for these with http://spheres.ml/ resonator
 };
 
