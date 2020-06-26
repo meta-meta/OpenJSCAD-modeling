@@ -185,7 +185,7 @@ const main = () => {
   });*/
 
   return [0, 5, 9, 12].map((i, idx) => hulusiDrone({
-    _isCalibration: true,
+    _isCalibration: false, // true to print just the reed for z-calibration. It needs a very thin gap.
     boreLength: 200 * (1 / intervals[i]), // fixme: seems like clarinet f=3:1 at 1/2 length
     reedBaseWidth: 2.8,
     reedLength: 8,
